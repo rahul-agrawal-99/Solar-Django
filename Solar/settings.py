@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# CSRF_TRUSTED_ORIGINS=["https://adf9-2409-40c2-9-1e97-9908-64de-91b4-514f.ngrok-free.app"]
+#  Allow CSRF_TRUSTED_ORIGINS from all hosts
+
 
 # Application definition
 

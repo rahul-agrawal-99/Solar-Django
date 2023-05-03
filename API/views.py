@@ -3,9 +3,11 @@ from django.shortcuts import render
 #  import APIView
 from rest_framework.views import APIView
 from .utils import *
+from .models import *
 
 #  impoer response
 from rest_framework.response import Response
+from .serializers import SolarDataSerializer
 
 # Create your views here.
 
@@ -14,30 +16,24 @@ class SaveData(APIView):
     def post(self , request):
 
         try:
-            #  d = [('{"TS" : "1669442071", "D": "26/11/2022 05:54:31", "SlaveID": "1","voltage": "[239.590286,238.094696,240.652374]"}', '')]
             data = request.data
-            # print("Eval Data : ",data)
             data = eval(list(data.keys())[0])
-            print("Eval Data : ",data)
+            # print("Eval Data : ",data)
             SlaveID = data['SlaveID']
             ReadingData = data['data']
 
 
             if SlaveID == "1":
-                print("Modbus ID 1 : ",ReadingData)
                 data_for_ID_1(ReadingData)
             elif SlaveID == "2":
-                print("Modbus ID 2 : ",ReadingData)
                 data_for_ID_2(ReadingData)
             elif SlaveID == "3":
-                print("Modbus ID 3 : ",ReadingData)
                 data_for_ID_3(ReadingData)
             elif SlaveID == "4":
-                print("Modbus ID 4 : ",ReadingData)
                 data_for_ID_4(ReadingData)
             else:
-                print("Invalid Modbus ID")
-                return Response("Invalid Modbus ID")
+                print("Invalid SlaveID")
+                return Response("Invalid SlaveID")
                 
             return Response("OK")
         
@@ -46,4 +42,13 @@ class SaveData(APIView):
             return Response("Error As : " + str(e))
     
 
+    def get(self , request):
+        all_data = request.GET.get('all' , None)
 
+        if all_data is None:
+            data = SolarData.objects.all().order_by('-Timestamp')[:2]
+            
+        else:
+            data = SolarData.objects.all().order_by('Timestamp')
+        serializer = SolarDataSerializer(data , many=True)
+        return Response(serializer.data)

@@ -9,4 +9,5 @@ class SolarDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SolarData
-        fields = '__all__'
+        fields = ('Timestamp' , 'slaveId' , 'voltage' , 'current' , 'active_power' , 'reactive_power'  , 'apperant_power' , 'active_current' , 'reactive_current')
+        
