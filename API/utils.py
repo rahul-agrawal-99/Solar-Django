@@ -10,7 +10,7 @@ from .serializers import SolarDataSerializer
 # Active current
 # Reactive current
 
-DB_COLUMNS = ["voltage" , "current" , "active_power" , "reactive_power"  , "apperant_power" , "active_current" , "reactive_current"  ]
+DB_COLUMNS = ["voltage" , "current" , "active_power" , "reactive_power"  , "apperant_power" , "active_energy_export" , "active_energy_import" ]
 
 CURRENT_DATA1 = itertools.cycle(DB_COLUMNS.copy())
 CURRENT_DATA2 = itertools.cycle(DB_COLUMNS.copy())
@@ -31,7 +31,7 @@ data_lock_4 = True
 def data_for_ID_1(data):
     global data_lock_1
     if len(data) == 3 and any([True for i in data if (i > 220  and i < 260) ]) and data_lock_1:
-        # print("Voltage Data")
+        print("Voltage Data")
         data_lock_1 = False
 
     if not data_lock_1:
@@ -116,7 +116,7 @@ def save_to_db(data , slaveId):
     for index , value in enumerate(data):
         data_dict[DB_COLUMNS[index]] = value
 
-    # print("Data Dict : ",data_dict)
+    print("Data Dict : ",data_dict)
     try:
         serializer = SolarDataSerializer(data=data_dict)
         if serializer.is_valid():

@@ -14,6 +14,7 @@ from .serializers import SolarDataSerializer
 class SaveData(APIView):
 
     def post(self , request):
+        # print("Request Data : ",request.data["data"])
 
         try:
             data = request.data
@@ -21,6 +22,9 @@ class SaveData(APIView):
             # print("Eval Data : ",data)
             SlaveID = data['SlaveID']
             ReadingData = data['data']
+            print("SlaveID : ",SlaveID)
+            print("ReadingData : ",ReadingData)
+            print("-"*30)
 
 
             if SlaveID == "1":

@@ -15,8 +15,11 @@ class SolarData(models.Model):
     active_power = ArrayField(models.CharField(max_length=100), null=True, blank=True)
     reactive_power = ArrayField(models.CharField(max_length=100), null=True, blank=True)
     apperant_power = ArrayField(models.CharField(max_length=100), null=True, blank=True)
-    active_current =ArrayField(models.CharField(max_length=100), null=True, blank=True)
-    reactive_current =ArrayField(models.CharField(max_length=100), null=True, blank=True)
+    active_energy_export =ArrayField(models.CharField(max_length=100), null=True, blank=True)
+    active_energy_import =ArrayField(models.CharField(max_length=100), null=True, blank=True)
+
+    # active_current =ArrayField(models.CharField(max_length=100), null=True, blank=True)
+    # reactive_current =ArrayField(models.CharField(max_length=100), null=True, blank=True)
 
 
     def __str__(self):
