@@ -49,19 +49,33 @@ class SaveData(APIView):
 
     def get(self , request):
         from_date = request.GET.get('fromDate' , None)
-        print(datetime.datetime.now())
-        to_date = request.GET.get('toDate' , datetime.datetime.now())
+        # print(datetime.datetime.now())
+        to_date = request.GET.get('toDate' , None)
+        slaveID = request.GET.get('slaveID' , None)
+
+        if slaveID:
+            data = SolarData.objects.filter(slaveId=slaveID)
+        else:
+            data = SolarData.objects.all()
 
         try:
             if from_date:
+                print("IN IF")
                 from_date = datetime.datetime.strptime(from_date , "%d-%m-%Y")
-                to_date = datetime.datetime.strptime(to_date , "%d-%m-%Y")
+                print("From Date : ",from_date)
+                if to_date is None:
+                    to_date = datetime.datetime.now().date()
+                else:
+                    to_date = datetime.datetime.strptime(to_date , "%d-%m-%Y %H:%M:%S")
                 print("From Date : ",from_date)
                 print("To Date : ",to_date)
-                data = SolarData.objects.filter(Timestamp__gte=from_date , Timestamp__lte=to_date).order_by('Timestamp')
+                data = data.filter(Timestamp__gte=from_date , Timestamp__lte=to_date).order_by('-Timestamp')[:100]
+                # data = SolarData.objects.filter(Timestamp__gte=from_date , Timestamp__lte=to_date).order_by('-Timestamp')[:1000]
             else:
-                data = SolarData.objects.all().order_by('Timestamp')
+                data = data.order_by('-Timestamp')[:1000]
+                data = SolarData.objects.all().order_by('-Timestamp')[:100]
             serializer = SolarDataSerializer(data , many=True)
+            print("First entry : ",serializer.data[0])
             return Response(serializer.data)
         
         except Exception as e:
