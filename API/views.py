@@ -8,6 +8,7 @@ from .models import *
 #  impoer response
 from rest_framework.response import Response
 from .serializers import SolarDataSerializer
+import datetime
 
 # Create your views here.
 
@@ -47,12 +48,22 @@ class SaveData(APIView):
     
 
     def get(self , request):
-        all_data = request.GET.get('all' , None)
+        from_date = request.GET.get('fromDate' , None)
+        print(datetime.datetime.now())
+        to_date = request.GET.get('toDate' , datetime.datetime.now())
 
-        if all_data is None:
-            data = SolarData.objects.all().order_by('-Timestamp')[:2]
-            
-        else:
-            data = SolarData.objects.all().order_by('Timestamp')
-        serializer = SolarDataSerializer(data , many=True)
-        return Response(serializer.data)
+        try:
+            if from_date:
+                from_date = datetime.datetime.strptime(from_date , "%d-%m-%Y")
+                to_date = datetime.datetime.strptime(to_date , "%d-%m-%Y")
+                print("From Date : ",from_date)
+                print("To Date : ",to_date)
+                data = SolarData.objects.filter(Timestamp__gte=from_date , Timestamp__lte=to_date).order_by('Timestamp')
+            else:
+                data = SolarData.objects.all().order_by('Timestamp')
+            serializer = SolarDataSerializer(data , many=True)
+            return Response(serializer.data)
+        
+        except Exception as e:
+            print("Error While Reading As : ",e)
+            return Response("Error As : " + str(e))
