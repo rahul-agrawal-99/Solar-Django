@@ -41,6 +41,7 @@ def data_for_ID_1(data):
         if parameter == "voltage":
             if temp_data_1:
                 save_to_db(temp_data_1 , 1)
+                data_lock_1 = True
                 # print("Clearing Data")
                 temp_data_1.clear()
             temp_data_1.extend([data])
@@ -61,6 +62,7 @@ def data_for_ID_2(data):
         if parameter == "voltage":
             if temp_data_2:
                 save_to_db(temp_data_2 , 2)
+                data_lock_2 = True
                 # print("Clearing Data")
                 temp_data_2.clear()
             temp_data_2.extend([data])
@@ -80,6 +82,7 @@ def data_for_ID_3(data):
         if parameter == "voltage":
             if temp_data_3:
                 save_to_db(temp_data_3 , 3)
+                data_lock_3 = True
                 # print("Clearing Data")
                 temp_data_3.clear()
             temp_data_3.extend([data])
@@ -100,6 +103,7 @@ def data_for_ID_4(data):
         if parameter == "voltage":
             if temp_data_4:
                 save_to_db(temp_data_4 , 4)
+                data_lock_4 = True
                 # print("Clearing Data")
                 temp_data_4.clear()
             temp_data_4.extend([data])
