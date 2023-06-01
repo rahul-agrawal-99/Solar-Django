@@ -7,6 +7,7 @@ import requests
 
 # Fetch data from API
 api_url = 'http://13.127.238.203:8000/get-data/'
+first_time = True
 
 @st.cache_data(ttl=40)  # Cache the data for 60 seconds
 def fetch_data():
@@ -51,8 +52,9 @@ for item in data:
 
     row = {
         # 'Timestamp': item.get('Timestamp'),
-        #  Convert timestamp from UTC to IST
+        #  Convert timestamp from UTC to IST and convert to YYYY-MM-DD
         'Timestamp': pd.to_datetime(item.get('Timestamp')) + pd.Timedelta(hours=5, minutes=30),
+        # 'Timestamp': pd.to_datetime(item.get('Timestamp')) + pd.Timedelta(hours=5, minutes=30),
         'SlaveID': item.get('slaveId'),
         'Voltage_R': float(item['voltage'][0]) if item['voltage'] else None,
         'Voltage_Y': float(item['voltage'][1]) if item['voltage'] and len(item['voltage']) > 1 else None,
@@ -75,14 +77,20 @@ for item in data:
     rows.append(row)
 
 # data with y axis as current_r and x axis as timestamp
-if col13.button('Load Data'):
+if col13.button('Load Data') or first_time:
+    first_time = False
     df = pd.DataFrame(rows)
     df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+    df['Date'] = df['Timestamp'].dt.strftime('%Y-%m-%d')
     df.set_index('Timestamp', inplace=True)
+
+    #  filter date column according to selected date range
+    # df = df["Date"][from_date:to_date]
 
 
     try:
         #  get data for selected slave id
+        
         df = df[df['SlaveID'] == selected_slave_id]
         #  get data for selected parameter with R Y B
         selected_parameter_list = []
@@ -91,6 +99,10 @@ if col13.button('Load Data'):
 
         #  get data for selected parameter
         df = df[selected_parameter_list]
+
+        #  filter data by data range
+        # df = df[from_date:to_date]
+
 
         #  remove null values
         df = df.dropna()
@@ -103,3 +115,34 @@ if col13.button('Load Data'):
 
     except Exception as e:
         st.error(e)
+
+
+# plot bar chart for ActiveEnergyExport and ActiveEnergyImport
+
+#  get data for selected slave id
+
+#  sidebar for charts
+charts_placeholder = st.sidebar
+
+
+
+df = pd.DataFrame(rows)
+df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+df.set_index('Timestamp', inplace=True)
+
+
+#  get data for selected slave id
+df = df[df['SlaveID'] == selected_slave_id]
+
+
+ActiveEnergyExport = df['ActiveEnergyExport'].sum()
+ActiveEnergyImport = df['ActiveEnergyImport'].sum()
+print(ActiveEnergyExport)
+print(ActiveEnergyImport)
+
+#  plot bar chart for ActiveEnergyExport and ActiveEnergyImport
+charts_placeholder.bar_chart({'ActiveEnergyExport':ActiveEnergyExport , 'ActiveEnergyImport':ActiveEnergyImport})
+
+#  plot line chart for ActiveEnergyExport and ActiveEnergyImport
+charts_placeholder.line_chart({'ActiveEnergyExport':ActiveEnergyExport , 'ActiveEnergyImport':ActiveEnergyImport})
+

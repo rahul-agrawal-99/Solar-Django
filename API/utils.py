@@ -28,6 +28,34 @@ data_lock_3 = True
 data_lock_4 = True
 
 
+# def save_to_db_temp(data , slaveID):
+#     data_dict = {}
+#     data_dict["slaveId"] = slaveID
+
+#     #  filter data by range 
+#     #  voltage : 220 - 260
+#     #  current : 0 - 150
+#     #  active_power : 0 - 10000
+#     #  reactive_power : 0 - 10000
+#     #  apperant_power : 0 - 10000
+
+#     for index , value in enumerate(data):
+#         data_dict[DB_COLUMNS[index]] = value
+
+#     print("Data Dict : ",data_dict)
+#     try:
+#         serializer = SolarDataSerializer(data=data_dict)
+#         if serializer.is_valid():
+#             serializer.save()
+#             print("Data Saved Successfully")
+#         else:
+#             print("Error While saving with serializer  As : ",serializer.errors)
+#     except Exception as e:
+#         print("Exception Error  While Writing As : ",e)
+#         pass
+
+
+
 def data_for_ID_1(data):
     global data_lock_1
     if len(data) == 3 and any([True for i in data if (i > 220  and i < 260) ]) and data_lock_1:
@@ -41,7 +69,7 @@ def data_for_ID_1(data):
         if parameter == "voltage":
             if temp_data_1:
                 save_to_db(temp_data_1 , 1)
-                data_lock_1 = True
+                # data_lock_1 = True
                 # print("Clearing Data")
                 temp_data_1.clear()
             temp_data_1.extend([data])
@@ -62,7 +90,7 @@ def data_for_ID_2(data):
         if parameter == "voltage":
             if temp_data_2:
                 save_to_db(temp_data_2 , 2)
-                data_lock_2 = True
+                # data_lock_2 = True
                 # print("Clearing Data")
                 temp_data_2.clear()
             temp_data_2.extend([data])
@@ -82,7 +110,7 @@ def data_for_ID_3(data):
         if parameter == "voltage":
             if temp_data_3:
                 save_to_db(temp_data_3 , 3)
-                data_lock_3 = True
+                # data_lock_3 = True
                 # print("Clearing Data")
                 temp_data_3.clear()
             temp_data_3.extend([data])
@@ -103,7 +131,7 @@ def data_for_ID_4(data):
         if parameter == "voltage":
             if temp_data_4:
                 save_to_db(temp_data_4 , 4)
-                data_lock_4 = True
+                # data_lock_4 = True
                 # print("Clearing Data")
                 temp_data_4.clear()
             temp_data_4.extend([data])
